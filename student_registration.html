@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Student Registration</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      body{font-family:Arial,Helvetica,sans-serif;padding:20px}
+      form{max-width:420px}
+      label{display:block;margin-top:10px}
+      input{width:100%;padding:8px;margin-top:6px;box-sizing:border-box}
+      .error{color:#c00;font-size:13px;margin-top:6px}
+      .success{background:#e6ffea;border:1px solid #b6e5c9;padding:10px;margin-top:12px}
+      button{margin-top:12px;padding:8px 12px}
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      function validateEmail(v){
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+      }
+      function validatePhone(v){
+        return /^\d{10}$/.test(v);
+      }
+      function validatePassword(v){
+        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(v);
+      }
+      function App(){
+        const [values,setValues] = React.useState({name:'',email:'',phone:'',password:'',confirm:''});
+        const [errors,setErrors] = React.useState({});
+        const [submitted,setSubmitted] = React.useState(null);
+        function handleChange(e){
+          const {name,value} = e.target;
+          setValues(prev=>({...prev,[name]:value}));
+          setErrors(prev=>({ ...prev, [name]: '' }));
+        }
+        function handleSubmit(e){
+          e.preventDefault();
+          const newErrors = {};
+          if(!values.name.trim()) newErrors.name = 'Name is required';
+          if(!validateEmail(values.email)) newErrors.email = 'Enter a valid email';
+          if(!validatePhone(values.phone)) newErrors.phone = 'Enter a 10-digit phone number';
+          if(!validatePassword(values.password)) newErrors.password = 'Password must be 8+ chars with upper, lower and digit';
+          if(values.password !== values.confirm) newErrors.confirm = 'Passwords do not match';
+          setErrors(newErrors);
+          if(Object.keys(newErrors).length === 0){
+            setSubmitted({name:values.name,email:values.email,phone:values.phone});
+            setValues({name:'',email:'',phone:'',password:'',confirm:''});
+          } else {
+            setSubmitted(null);
+          }
+        }
+        return (
+          <div>
+            <h2>Student Registration</h2>
+            <form onSubmit={handleSubmit} noValidate>
+              <label>
+                Name
+                <input name="name" value={values.name} onChange={handleChange} />
+                {errors.name && <div className="error">{errors.name}</div>}
+              </label>
+              <label>
+                Email
+                <input name="email" value={values.email} onChange={handleChange} />
+                {errors.email && <div className="error">{errors.email}</div>}
+              </label>
+              <label>
+                Phone
+                <input name="phone" value={values.phone} onChange={handleChange} />
+                {errors.phone && <div className="error">{errors.phone}</div>}
+              </label>
+              <label>
+                Password
+                <input name="password" type="password" value={values.password} onChange={handleChange} />
+                {errors.password && <div className="error">{errors.password}</div>}
+              </label>
+              <label>
+                Confirm Password
+                <input name="confirm" type="password" value={values.confirm} onChange={handleChange} />
+                {errors.confirm && <div className="error">{errors.confirm}</div>}
+              </label>
+              <button type="submit">Register</button>
+            </form>
+            {submitted && (
+              <div className="success">
+                <div><strong>Submitted details</strong></div>
+                <div>Name: {submitted.name}</div>
+                <div>Email: {submitted.email}</div>
+                <div>Phone: {submitted.phone}</div>
+              </div>
+            )}
+          </div>
+        );
+      }
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App/>);
+    </script>
+  </body>
+</html>

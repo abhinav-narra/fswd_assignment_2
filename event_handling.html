@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Event Handling Demo</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      body{font-family:Arial,Helvetica,sans-serif;padding:20px}
+      .box{width:200px;height:120px;display:flex;align-items:center;justify-content:center;border:1px solid #999;user-select:none;cursor:pointer}
+      .controls{margin-top:16px}
+      input{padding:6px;font-size:14px}
+      form{margin-top:12px}
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      function App(){
+        const [color,setColor] = React.useState('#f0f0f0');
+        const [dblMsg,setDblMsg] = React.useState('');
+        const [lastKey,setLastKey] = React.useState('');
+        function handleMouseOver(){setColor('#cfe8ff')}
+        function handleMouseOut(){setColor('#f0f0f0')}
+        function handleDoubleClick(){setDblMsg('Box was double-clicked')}
+        function handleKeyDown(e){setLastKey(e.key)}
+        function handleSubmit(e){e.preventDefault();alert('Form submitted successfully')}
+        return (
+          <div>
+            <h2>Event Handling Demo</h2>
+            <div
+              className="box"
+              style={{background:color}}
+              onMouseOver={handleMouseOver}
+              onMouseOut={handleMouseOut}
+              onDoubleClick={handleDoubleClick}
+            >
+              Hover / Double-click me
+            </div>
+            <div style={{marginTop:8,color:'#333'}}>{dblMsg}</div>
+            <div className="controls">
+              <label>Press keys: <input onKeyDown={handleKeyDown} placeholder="Focus and press a key" /></label>
+              <div style={{marginTop:8}}>Last key pressed: <strong>{lastKey}</strong></div>
+            </div>
+            <form onSubmit={handleSubmit}>
+              <div style={{marginTop:12}}>
+                <input type="text" placeholder="Type something" required />
+                <button type="submit" style={{marginLeft:8}}>Submit</button>
+              </div>
+            </form>
+          </div>
+        );
+      }
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App/>);
+    </script>
+  </body>
+</html>
