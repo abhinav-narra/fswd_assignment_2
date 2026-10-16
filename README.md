@@ -1,7 +1,5 @@
 # fswd_assignment_2
 
-Three standalone runnable React examples.
-
 Files:
 - employee_table.html
 - event_handling.html
